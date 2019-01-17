@@ -1,5 +1,16 @@
 pipeline {
     agent any
+    
+    parameters {
+        string(name: 'tomcat_dev', defaultvalue: '34.238.120.148', description: 'Staging Server')
+        string(name: 'tomcat_prod', defaultvalue: '3.83.174.100', description: 'Production Server')
+    }
+
+    triggers {
+        pollSCM('* * * * *')
+
+    }
+
     stages{
         stage('Build'){
             steps {
@@ -12,35 +23,26 @@ pipeline {
                 }
             }
         }
-        stage ('Deploy to Staging'){
-            steps {
-                build job: 'deploy-staging'
-            }
-        }
-        stage ('Checkstyle analysis'){
-            steps {
-                build job: 'Static-Analysis'
-            }
-        }
-        stage ('Deploy to Production'){
-            steps{
-                timeout(time:5, unit:'DAYS'){
-                    input message:'Approve PRODUCTION Deployment?'
+
+        stage ('Deployments'){
+            parallel{
+                stage ('Deploy to Staging'){
+                    steps {
+                        bat "scp -i C:\Users\abhbhatt\newAWSkey.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps/"
+                    }
+                }
+                stage ('Checkstyle Analysis'){
+                    steps {
+                        bat 'mvn checkstyle:checkstyle'
+                    }
                 }
 
-                build job: 'deploy-prod'
-            }
-            post {
-                success {
-                    echo 'Code deployed to Production.'
-                }
-
-                failure {
-                    echo ' Deployment failed.'
+                stage ("Deploy to Production"){
+                    steps {
+                        bat "scp -i C:\Users\abhbhatt\newAWSkey.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat/webapps/"
+                    }
                 }
             }
         }
-
-
     }
 }

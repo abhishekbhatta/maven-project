@@ -17,7 +17,11 @@ pipeline {
                 build job: 'deploy-staging'
             }
         }
-
+        stage ('Checkstyle analysis'){
+            steps {
+                build job: 'Static-Analysis'
+            }
+        }
         stage ('Deploy to Production'){
             steps{
                 timeout(time:5, unit:'DAYS'){

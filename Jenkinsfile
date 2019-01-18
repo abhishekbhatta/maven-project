@@ -6,6 +6,7 @@ pipeline {
         string(name: 'tomcat_prod', defaultValue: '3.83.174.100', description: 'Production Server')
     }
 
+    export artifact_directory="C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/"
     triggers {
         pollSCM('* * * * *')
 
@@ -28,7 +29,7 @@ pipeline {
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        bat 'echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk "C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/webapp.war" "ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps/"'
+                        bat "echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk $artifact_directory/webapp.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps/"
                     }
                 }
                 

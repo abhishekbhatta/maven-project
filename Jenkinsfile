@@ -28,7 +28,7 @@ pipeline {
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        bat "echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk C:/Program\ \Files\ \(x86\)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/ /webapp.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps/"
+                        bat "echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk C:/'Program Files (x86)'/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/ /webapp.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps/"
                     }
                 }
                 

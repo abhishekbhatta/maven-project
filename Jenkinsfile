@@ -6,7 +6,7 @@ pipeline {
         string(name: 'tomcat_prod', defaultValue: '3.83.174.100', description: 'Production Server')
     }
 
-    export artifact_directory="C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/"
+    SET artifact_directory="C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/"
     triggers {
         pollSCM('* * * * *')
 

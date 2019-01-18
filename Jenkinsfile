@@ -1,20 +1,19 @@
 pipeline {
     agent any
-    
+
     parameters {
-        string(name: 'tomcat_dev', defaultValue: '34.238.120.148', description: 'Staging Server')
-        string(name: 'tomcat_prod', defaultValue: '3.83.174.100', description: 'Production Server')
+         string(name: 'tomcat_dev', defaultValue: '34.238.120.148', description: 'Staging Server')
+         string(name: 'tomcat_prod', defaultValue: '3.83.174.100', description: 'Production Server')
     }
 
     triggers {
-        pollSCM('* * * * *')
+         pollSCM('* * * * *')
+     }
 
-    }
-
-    stages{
+stages{
         stage('Build'){
             steps {
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
             post {
                 success {
@@ -28,19 +27,13 @@ pipeline {
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        bat 'echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk "C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/webapp.war" ec2-user@34.238.120.148:/var/lib/tomcat/webapps/'
-                    }
-                }
-                
-                stage ("Deploy to Production"){
-                    steps {
-                        bat 'echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk "C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/webapp.war" ec2-user@3.83.174.100:/var/lib/tomcat/webapps/'
+                        sh "scp -i /home/jenkins/tomcat-demo.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat/webapps"
                     }
                 }
 
-                stage ('Checkstyle Analysis'){
+                stage ("Deploy to Production"){
                     steps {
-                        bat 'mvn checkstyle:checkstyle'
+                        sh "scp -i /home/jenkins/tomcat-demo.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat/webapps"
                     }
                 }
             }

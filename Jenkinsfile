@@ -34,7 +34,7 @@ pipeline {
                 
                 stage ("Deploy to Production"){
                     steps {
-                        bat 'echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk "C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/webapp.war" ec2-user@$3.83.174.100:/var/lib/tomcat/webapps/'
+                        bat 'echo y | pscp -i C:/Users/abhbhatt/Documents/newAWSkey.ppk "C:/Program Files (x86)/Jenkins/workspace/Fully-Automated-Pipeline/webapp/target/webapp.war" ec2-user@3.83.174.100:/var/lib/tomcat/webapps/'
                     }
                 }
 
